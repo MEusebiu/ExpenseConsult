@@ -1,8 +1,8 @@
-﻿namespace ExpenseConsult.Models
-{
-    public class Category
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-}
+﻿//namespace ExpenseConsult.Models
+//{
+//    public class Category
+//    {
+//        public int Id { get; set; }
+//        public string Name { get; set; }
+//    }
+//}

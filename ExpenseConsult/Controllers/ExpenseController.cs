@@ -1,5 +1,6 @@
 using ExpenseConsult.Models;
 using ExpenseConsult.Services;
+using ExpenseConsult.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseConsult.Controllers;
@@ -8,9 +9,9 @@ namespace ExpenseConsult.Controllers;
 [Route("api/[controller]")]
 public class ExpenseController : ControllerBase
 {
-    private ExpenseService _expenseService;
+    private IExpenseService _expenseService;
 
-    public ExpenseController(ExpenseService expenseService)
+    public ExpenseController(IExpenseService expenseService)
     {
         _expenseService = expenseService;
     }

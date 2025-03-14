@@ -1,9 +1,10 @@
 ﻿using ExpenseConsult.Models;
 using ExpenseConsult.Repositories;
+using ExpenseConsult.Services.Interfaces;
 
 namespace ExpenseConsult.Services
 {
-    public class ExpenseService
+    public class ExpenseService : IExpenseService
     {
         private readonly IRepository<Expense> _expenseRepository;
 
