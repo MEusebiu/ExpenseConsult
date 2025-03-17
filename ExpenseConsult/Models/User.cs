@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ExpenseConsult.Models;
 
 public class User
 {
-    [Key]
+    [Key][JsonIgnore]
     public int Id { get; set; }
 
     [Required]
@@ -15,5 +16,6 @@ public class User
     [EmailAddress]
     public string Email { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 }

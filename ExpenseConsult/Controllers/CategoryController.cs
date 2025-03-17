@@ -51,7 +51,7 @@ public class CategoryController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCategory(int id, [FromBody] Category category)
     {
-        await _categoryRepository.UpdateAsync(category);
+        await _categoryRepository.UpdateAsync(id, category);
 
         return Ok();
     }

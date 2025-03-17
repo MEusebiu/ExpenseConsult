@@ -48,13 +48,21 @@ namespace ExpenseConsult.Repositories
             _cache.TryAdd(key, entity);
         }
 
-        public async Task UpdateAsync(TValue entity)
+        public async Task UpdateAsync(TKey key, TValue entity)
         {
-            _dbSet.Update(entity);
+            var existingEntity = await _dbSet.FindAsync(key);
+            var entityProperties = typeof(TValue).GetProperties().Where(p => p.Name != "Id").ToList();
+
+            foreach (var property in entityProperties)
+            {
+                var newValue = property.GetValue(entity);
+                property.SetValue(existingEntity, newValue);
+            }
+
+            _context.Entry(existingEntity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            var key = GetEntityKey(entity);
-            _cache.AddOrUpdate(key, entity, (OldValue, NewValue) => entity);
+            _cache.TryUpdate(key, existingEntity, entity);
         }
 
         public async Task DeleteAsync(TKey key)

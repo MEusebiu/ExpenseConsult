@@ -1,4 +1,5 @@
 using ExpenseConsult.Models;
+using ExpenseConsult.Models.DTO;
 using ExpenseConsult.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,12 +37,20 @@ public class ExpenseController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateExpense([FromBody] Expense expense)
+    public async Task<IActionResult> CreateExpense([FromBody] ExpenseDto expenseDto)
     {
-        if (expense == null)
+        if (expenseDto == null)
         {
             return BadRequest("Expense data is required.");
         }
+
+        var expense = new Expense
+        {
+            Amount = expenseDto.Amount,
+            Description = expenseDto.Description,
+            CategoryId = expenseDto.CategoryId,
+            UserId = expenseDto.UserId
+        };
 
         await _expenseRepository.AddAsync(expense);
 
@@ -49,9 +58,17 @@ public class ExpenseController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateExpense(int id, [FromBody] Expense expense)
+    public async Task<IActionResult> UpdateExpense(int id, [FromBody] ExpenseDto expenseDto)
     {
-        await _expenseRepository.UpdateAsync(expense);
+        var expense = new Expense
+        {
+            Amount = expenseDto.Amount,
+            Description = expenseDto.Description,
+            CategoryId = expenseDto.CategoryId,
+            UserId = expenseDto.UserId
+        };
+
+        await _expenseRepository.UpdateAsync(id,expense);
 
         return Ok();
     }

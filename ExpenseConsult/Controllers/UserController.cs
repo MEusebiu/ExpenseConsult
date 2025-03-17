@@ -51,7 +51,7 @@ public class UserController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateExpense(int id, [FromBody] User user)
     {
-        await _userRepository.UpdateAsync(user);
+        await _userRepository.UpdateAsync(id, user);
 
         return Ok();
     }

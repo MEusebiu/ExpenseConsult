@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ExpenseConsult.Models;
 
 public class Expense
 {
-    [Key]
+    [Key][JsonIgnore]
     public int Id { get; set; }
 
     public string Description { get; set; }
@@ -15,11 +16,11 @@ public class Expense
 
     public int CategoryId { get; set; }
 
-    [ForeignKey("CategoryId")]
+    [JsonIgnore][ForeignKey("CategoryId")]
     public virtual Category Category { get; set; }
 
     public int UserId { get; set; }
 
-    [ForeignKey("UserId")]
+    [JsonIgnore][ForeignKey("UserId")]
     public virtual User User { get; set; }
 }

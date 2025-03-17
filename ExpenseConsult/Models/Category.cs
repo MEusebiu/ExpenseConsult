@@ -5,8 +5,7 @@ namespace ExpenseConsult.Models
 {
     public class Category
     {
-        [JsonIgnore]
-        [Key]
+        [Key][JsonIgnore]
         public int Id { get; set; }
 
         [Required]
