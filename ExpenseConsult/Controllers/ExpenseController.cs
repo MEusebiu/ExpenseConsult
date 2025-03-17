@@ -1,6 +1,5 @@
 using ExpenseConsult.Models;
-using ExpenseConsult.Services;
-using ExpenseConsult.Services.Interfaces;
+using ExpenseConsult.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseConsult.Controllers;
@@ -9,17 +8,25 @@ namespace ExpenseConsult.Controllers;
 [Route("api/[controller]")]
 public class ExpenseController : ControllerBase
 {
-    private IExpenseService _expenseService;
+    private IRepository<int, Expense> _expenseRepository;
 
-    public ExpenseController(IExpenseService expenseService)
+    public ExpenseController(IRepository<int, Expense> expenseRepository)
     {
-        _expenseService = expenseService;
+        _expenseRepository = expenseRepository;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetExpenses()
+    {
+        var expenses = await _expenseRepository.GetAllAsync();
+
+        return Ok(expenses);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetExpense(int id)
     {
-        var expense = await _expenseService.GetExpenseByIdAsync(id);
+        var expense = await _expenseRepository.GetByIdAsync(id);
         if (expense == null)
         {
             return NotFound();
@@ -36,7 +43,7 @@ public class ExpenseController : ControllerBase
             return BadRequest("Expense data is required.");
         }
 
-        await _expenseService.AddExpenseAsync(expense);
+        await _expenseRepository.AddAsync(expense);
 
         return Ok();
     }
@@ -44,12 +51,7 @@ public class ExpenseController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateExpense(int id, [FromBody] Expense expense)
     {
-        if (id != expense.Id)
-        {
-            return BadRequest("Expense id not found");
-        }
-
-        await _expenseService.UpdateExpenseAsync(expense);
+        await _expenseRepository.UpdateAsync(expense);
 
         return Ok();
     }
@@ -57,7 +59,7 @@ public class ExpenseController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteExpense(int id)
     {
-        await _expenseService.DeleteExpenseAsync(id);
+        await _expenseRepository.DeleteAsync(id);
 
         return Ok(); 
     }

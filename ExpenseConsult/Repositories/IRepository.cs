@@ -1,11 +1,11 @@
-﻿namespace ExpenseConsult.Repositories
+﻿namespace ExpenseConsult.Repositories;
+
+public interface IRepository<TKey, TValue> where TValue : class
 {
-    public interface IRepository<T> where T : class
-    {
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetByIdAsync(int id);
-        Task AddAsync(T entity);
-        Task UpdateAsync(T entity);
-        Task DeleteAsync(int id);
-    }
+    Task<IEnumerable<TValue>> GetAllAsync();
+    Task<TValue?> GetByIdAsync(TKey key);
+    Task AddAsync(TValue entity);
+    Task UpdateAsync(TValue entity);
+    Task DeleteAsync(TKey key);
+    Task LoadCacheAsync();
 }
