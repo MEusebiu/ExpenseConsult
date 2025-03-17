@@ -1,8 +1,7 @@
-﻿
-using ExpenseConsult.Models;
+﻿using ExpenseConsult.Models;
 using ExpenseConsult.Repositories;
 
-namespace ExpenseConsult
+namespace ExpenseConsult.Initializers
 {
     public class ExpenseCacheInitializer : IHostedService
     {

@@ -18,16 +18,6 @@ namespace ExpenseConsult.Repositories
             _dbSet = context.Set<TValue>();
         }
 
-        public async Task LoadCacheAsync()
-        {
-            var items = await _dbSet.ToListAsync();
-            foreach (var item in items)
-            {
-                var key = GetEntityKey(item);
-                _cache.TryAdd(key, item);
-            }
-        }
-
         public async Task<IEnumerable<TValue>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
@@ -76,6 +66,16 @@ namespace ExpenseConsult.Repositories
             await _context.SaveChangesAsync();
 
             _cache.TryRemove(key, out _);
+        }
+
+        public async Task LoadCacheAsync()
+        {
+            var items = await _dbSet.ToListAsync();
+            foreach (var item in items)
+            {
+                var key = GetEntityKey(item);
+                _cache.TryAdd(key, item);
+            }
         }
 
         private static TKey GetEntityKey(TValue entity)
