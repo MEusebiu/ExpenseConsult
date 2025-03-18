@@ -1,7 +1,10 @@
+using ExpenseConsult;
 using ExpenseConsult.Data;
 using ExpenseConsult.Initializers;
 using ExpenseConsult.Models;
 using ExpenseConsult.Repositories;
+using ExpenseConsult.Services;
+using ExpenseConsult.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System.Collections.Concurrent;
@@ -17,6 +20,9 @@ services.AddSingleton(new ConcurrentDictionary<int, Expense>());
 services.AddSingleton(new ConcurrentDictionary<int, Category>());
 services.AddSingleton(new ConcurrentDictionary<int, User>());
 services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+services.AddTransient<ICategoryService, CategoryService>();
+services.AddTransient<IUserService, UserService>();
+services.AddTransient<IExpenseService, ExpenseService>();
 
 services.AddHostedService<ExpenseCacheInitializer>();
 services.AddHostedService<CategoryCacheInitializer>();
@@ -28,6 +34,8 @@ services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

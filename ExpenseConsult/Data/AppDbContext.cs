@@ -13,8 +13,16 @@ namespace ExpenseConsult.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().ToTable("Users");
-            modelBuilder.Entity<Category>().ToTable("Categories");
+            modelBuilder.Entity<User>()
+                .ToTable("Users")
+                .HasIndex(u => u.Email)
+                .IsUnique(); 
+
+            modelBuilder.Entity<Category>()
+                .ToTable("Categories")
+                .HasIndex(u => u.Name)
+                .IsUnique();
+
             modelBuilder.Entity<Expense>().ToTable("Expenses");
 
             base.OnModelCreating(modelBuilder);

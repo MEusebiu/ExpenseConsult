@@ -10,7 +10,7 @@ namespace ExpenseConsult.Services.Interfaces
 
         Task AddExpenseAsync(Expense expense);
 
-        Task UpdateExpenseAsync(Expense expense);
+        Task UpdateExpenseAsync(int id, Expense expense);
 
         Task DeleteExpenseAsync(int id);
     }

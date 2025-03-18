@@ -1,5 +1,6 @@
 using ExpenseConsult.Models;
-using ExpenseConsult.Repositories;
+using ExpenseConsult.Models.DTO;
+using ExpenseConsult.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseConsult.Controllers;
@@ -8,31 +9,31 @@ namespace ExpenseConsult.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    private IRepository<int, User> _userRepository;
+    private IUserService _userService;
 
-    public UserController(IRepository<int, User> userRepository)
+    public UserController(IUserService userService)
     {
-        _userRepository = userRepository;
+        _userService = userService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
-        var expenses = await _userRepository.GetAllAsync();
+        var user = await _userService.GetAllUsersAsync();
 
-        return Ok(expenses);
+        return Ok(user);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(int id)
     {
-        var expense = await _userRepository.GetByIdAsync(id);
-        if (expense == null)
+        var user = await _userService.GetUserByIdAsync(id);
+        if (user == null)
         {
             return NotFound();
         }
 
-        return Ok(expense);
+        return Ok(user);
     }
 
     [HttpPost]
@@ -43,15 +44,25 @@ public class UserController : ControllerBase
             return BadRequest("User data is required.");
         }
 
-        await _userRepository.AddAsync(user);
+        try
+        {
+            await _userService.AddUserAsync(user);
+        }
+        catch (Exception ex)
+        {
+            return Conflict(ex.Message);
+        }
 
         return Ok();
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateExpense(int id, [FromBody] User user)
+    public async Task<IActionResult> UpdateExpense(int id, [FromBody] UserUpdateDto userUpdateDto)
     {
-        await _userRepository.UpdateAsync(id, user);
+        var user = await _userService.GetUserByIdAsync(id);
+        user.Name = userUpdateDto.Name;
+
+        await _userService.UpdateUserAsync(id, user);
 
         return Ok();
     }
@@ -59,7 +70,7 @@ public class UserController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteExpense(int id)
     {
-        await _userRepository.DeleteAsync(id);
+        await _userService.DeleteUserAsync(id);
 
         return Ok(); 
     }

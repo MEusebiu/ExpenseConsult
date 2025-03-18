@@ -42,7 +42,7 @@ namespace ExpenseConsult.Repositories
         public async Task AddAsync(TValue entity)
         {
             var item = await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await SaveChangesAsync();
 
             var key = GetEntityKey(entity);
             _cache.TryAdd(key, entity);
@@ -60,7 +60,7 @@ namespace ExpenseConsult.Repositories
             }
 
             _context.Entry(existingEntity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            await SaveChangesAsync();
 
             _cache.TryUpdate(key, existingEntity, entity);
         }
@@ -71,7 +71,7 @@ namespace ExpenseConsult.Repositories
             if (entity == null) return;
 
             _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
+            await SaveChangesAsync();
 
             _cache.TryRemove(key, out _);
         }
@@ -97,6 +97,11 @@ namespace ExpenseConsult.Repositories
             }
 
             return (TKey)property.GetValue(entity)!;
+        }
+
+        private async Task SaveChangesAsync()
+        {           
+            await _context.SaveChangesAsync();
         }
     }
 }

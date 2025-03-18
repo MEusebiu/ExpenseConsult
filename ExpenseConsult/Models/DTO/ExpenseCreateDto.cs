@@ -2,7 +2,7 @@
 
 namespace ExpenseConsult.Models.DTO
 {
-    public class ExpenseDto
+    public class ExpenseCreateDto
     {
         [Required]
         public decimal Amount { get; set; }

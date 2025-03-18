@@ -12,6 +12,7 @@ public class Expense
     public string Description { get; set; }
 
     [Required]
+    [Column(TypeName = "decimal(18,2)")]
     public decimal Amount { get; set; }
 
     public int CategoryId { get; set; }

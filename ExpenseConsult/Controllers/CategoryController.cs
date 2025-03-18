@@ -1,5 +1,5 @@
 using ExpenseConsult.Models;
-using ExpenseConsult.Repositories;
+using ExpenseConsult.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseConsult.Controllers;
@@ -8,17 +8,17 @@ namespace ExpenseConsult.Controllers;
 [Route("api/[controller]")]
 public class CategoryController : ControllerBase
 {
-    private IRepository<int, Category> _categoryRepository;
+    private ICategoryService _categoryService;
 
-    public CategoryController(IRepository<int, Category> categoryRepository)
+    public CategoryController(ICategoryService categoryService)
     {
-        _categoryRepository = categoryRepository;
+        _categoryService = categoryService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetCategories()
     {
-        var categories = await _categoryRepository.GetAllAsync();
+        var categories = await _categoryService.GetCategoriesAsync();
 
         return Ok(categories);
     }
@@ -26,7 +26,7 @@ public class CategoryController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCategoryById(int id)
     {
-        var category = await _categoryRepository.GetByIdAsync(id);
+        var category = await _categoryService.GetCategoryByIdAsync(id);
         if (category == null)
         {
             return NotFound();
@@ -38,12 +38,16 @@ public class CategoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateCategory([FromBody] Category category)
     {
-        if (category == null)
+        try
         {
-            return BadRequest("Category data is required.");
+            await _categoryService.AddCategoryAsync(category);
+        }
+        catch (Exception ex)
+        {
+            return Conflict(ex.Message);
         }
 
-        await _categoryRepository.AddAsync(category);
+        await _categoryService.AddCategoryAsync(category);
 
         return Ok();
     }
@@ -51,7 +55,14 @@ public class CategoryController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCategory(int id, [FromBody] Category category)
     {
-        await _categoryRepository.UpdateAsync(id, category);
+        try
+        {
+            await _categoryService.UpdateCategoryAsync(id, category);
+        }
+        catch (Exception ex)
+        {
+            return Conflict(ex.Message);
+        }
 
         return Ok();
     }
@@ -59,7 +70,7 @@ public class CategoryController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
-        await _categoryRepository.DeleteAsync(id);
+        await _categoryService.DeleteCategoryAsync(id);
 
         return Ok(); 
     }

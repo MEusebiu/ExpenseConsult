@@ -1,6 +1,7 @@
 using ExpenseConsult.Models;
 using ExpenseConsult.Models.DTO;
 using ExpenseConsult.Repositories;
+using ExpenseConsult.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseConsult.Controllers;
@@ -9,17 +10,17 @@ namespace ExpenseConsult.Controllers;
 [Route("api/[controller]")]
 public class ExpenseController : ControllerBase
 {
-    private IRepository<int, Expense> _expenseRepository;
+    private IExpenseService _expenseService;
 
-    public ExpenseController(IRepository<int, Expense> expenseRepository)
+    public ExpenseController(IExpenseService expenseService)
     {
-        _expenseRepository = expenseRepository;
+        _expenseService = expenseService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetExpenses()
     {
-        var expenses = await _expenseRepository.GetAllAsync();
+        var expenses = await _expenseService.GetExpensesAsync();
 
         return Ok(expenses);
     }
@@ -27,7 +28,7 @@ public class ExpenseController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetExpense(int id)
     {
-        var expense = await _expenseRepository.GetByIdAsync(id);
+        var expense = await _expenseService.GetExpenseByIdAsync(id);
         if (expense == null)
         {
             return NotFound();
@@ -37,7 +38,7 @@ public class ExpenseController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateExpense([FromBody] ExpenseDto expenseDto)
+    public async Task<IActionResult> CreateExpense([FromBody] ExpenseCreateDto expenseDto)
     {
         if (expenseDto == null)
         {
@@ -51,14 +52,14 @@ public class ExpenseController : ControllerBase
             CategoryId = expenseDto.CategoryId,
             UserId = expenseDto.UserId
         };
-
-        await _expenseRepository.AddAsync(expense);
+       
+        await _expenseService.AddExpenseAsync(expense);
 
         return Ok();
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateExpense(int id, [FromBody] ExpenseDto expenseDto)
+    public async Task<IActionResult> UpdateExpense(int id, [FromBody] ExpenseCreateDto expenseDto)
     {
         var expense = new Expense
         {
@@ -68,7 +69,7 @@ public class ExpenseController : ControllerBase
             UserId = expenseDto.UserId
         };
 
-        await _expenseRepository.UpdateAsync(id,expense);
+        await _expenseService.UpdateExpenseAsync(id,expense);
 
         return Ok();
     }
@@ -76,7 +77,7 @@ public class ExpenseController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteExpense(int id)
     {
-        await _expenseRepository.DeleteAsync(id);
+        await _expenseService.DeleteExpenseAsync(id);
 
         return Ok(); 
     }
