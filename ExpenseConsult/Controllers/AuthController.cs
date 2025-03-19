@@ -1,10 +1,12 @@
 ﻿using ExpenseConsult.Models;
 using ExpenseConsult.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseConsult.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/auth")]
     public class AuthController : ControllerBase
@@ -57,7 +59,7 @@ namespace ExpenseConsult.Controllers
         [HttpGet("access-denied")]
         public IActionResult AccessDenied()
         {
-            return Forbid("You do not have permission to access this resource.");
+            return StatusCode(StatusCodes.Status403Forbidden, "You are not authorized to access this resource.");
         }
     }
 }

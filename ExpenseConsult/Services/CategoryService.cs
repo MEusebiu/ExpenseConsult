@@ -2,53 +2,52 @@
 using ExpenseConsult.Repositories;
 using ExpenseConsult.Services.Interfaces;
 
-namespace ExpenseConsult.Services
+namespace ExpenseConsult.Services;
+
+public class CategoryService : ICategoryService
 {
-    public class CategoryService : ICategoryService
+    private readonly IRepository<string, Category> _categoryRepository;
+
+    public CategoryService(IRepository<string, Category> categoryRepository)
     {
-        private readonly IRepository<string, Category> _categoryRepository;
+        _categoryRepository = categoryRepository;
+    }
 
-        public CategoryService(IRepository<string, Category> categoryRepository)
+    public async Task<IEnumerable<Category>> GetCategoriesAsync()
+    {
+        return await _categoryRepository.GetAllAsync();
+    }
+
+    public async Task<Category> GetCategoryByIdAsync(string id)
+    {
+        return await _categoryRepository.GetByIdAsync(id);
+    }
+
+    public async Task AddCategoryAsync(Category category)
+    {
+        CheckForDuplicateCategory(category);
+
+        await _categoryRepository.AddAsync(category);
+    }
+
+    public async Task UpdateCategoryAsync(string key, Category category)
+    {
+        CheckForDuplicateCategory(category);
+
+        await _categoryRepository.UpdateAsync(key, category);
+    }
+
+    public async Task DeleteCategoryAsync(string id)
+    {
+        await _categoryRepository.DeleteAsync(id);
+    }
+
+    private void CheckForDuplicateCategory(Category category)
+    {
+        bool existingCategory = GetCategoriesAsync().Result.Any(c => c.Name == category.Name);
+        if (existingCategory)
         {
-            _categoryRepository = categoryRepository;
-        }
-
-        public async Task<IEnumerable<Category>> GetCategoriesAsync()
-        {
-            return await _categoryRepository.GetAllAsync();
-        }
-
-        public async Task<Category> GetCategoryByIdAsync(string id)
-        {
-            return await _categoryRepository.GetByIdAsync(id);
-        }
-
-        public async Task AddCategoryAsync(Category category)
-        {
-            CheckForDuplicateCategory(category);
-
-            await _categoryRepository.AddAsync(category);
-        }
-
-        public async Task UpdateCategoryAsync(string key, Category category)
-        {
-            CheckForDuplicateCategory(category);
-
-            await _categoryRepository.UpdateAsync(key, category);
-        }
-
-        public async Task DeleteCategoryAsync(string id)
-        {
-            await _categoryRepository.DeleteAsync(id);
-        }
-
-        private void CheckForDuplicateCategory(Category category)
-        {
-            bool existingCategory = GetCategoriesAsync().Result.Any(c => c.Name == category.Name);
-            if (existingCategory)
-            {
-                throw new InvalidOperationException("A category with the same name already exists.");
-            }
+            throw new InvalidOperationException("A category with the same name already exists.");
         }
     }
 }

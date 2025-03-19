@@ -1,17 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace ExpenseConsult.Models
+namespace ExpenseConsult.Models;
+
+public class Category
 {
-    public class Category
-    {
-        [Key][JsonIgnore]
-        public string Id { get; set; }
+    [Key]
+    public string Id { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        [JsonIgnore]
-        public virtual IEnumerable<Expense> Expenses { get; set; } = new List<Expense>();
-    }
+    [JsonIgnore]
+    public virtual IEnumerable<Expense> Expenses { get; set; } = new List<Expense>();
 }

@@ -6,22 +6,23 @@ namespace ExpenseConsult.Models;
 
 public class Expense
 {
-    [Key][JsonIgnore]
+    [Key]
     public string Id { get; set; }
 
     public string Description { get; set; }
 
-    [Required]
     [Column(TypeName = "decimal(18,2)")]
     public decimal Amount { get; set; }
 
     public string CategoryId { get; set; }
 
-    [JsonIgnore][ForeignKey("CategoryId")]
+    [JsonIgnore]
+    [ForeignKey("CategoryId")]
     public virtual Category Category { get; set; }
 
     public string UserId { get; set; }
 
-    [JsonIgnore][ForeignKey("UserId")]
+    [JsonIgnore]
+    [ForeignKey("UserId")]
     public virtual User User { get; set; }
 }

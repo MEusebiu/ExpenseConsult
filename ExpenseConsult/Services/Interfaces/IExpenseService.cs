@@ -1,17 +1,16 @@
 ﻿using ExpenseConsult.Models;
 
-namespace ExpenseConsult.Services.Interfaces
+namespace ExpenseConsult.Services.Interfaces;
+
+public interface IExpenseService
 {
-    public interface IExpenseService
-    {
-        Task<IEnumerable<Expense>> GetExpensesAsync();
+    Task<IEnumerable<Expense>> GetExpensesAsync();
 
-        Task<Expense> GetExpenseByIdAsync(string id);
+    Task<Expense> GetExpenseByIdAsync(string id);
 
-        Task AddExpenseAsync(Expense expense);
+    Task AddExpenseAsync(Expense expense);
 
-        Task UpdateExpenseAsync(string id, Expense expense);
+    Task UpdateExpenseAsync(string id, Expense expense);
 
-        Task DeleteExpenseAsync(string id);
-    }
+    Task DeleteExpenseAsync(string id);
 }

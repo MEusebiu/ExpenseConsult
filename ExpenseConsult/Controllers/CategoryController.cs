@@ -1,4 +1,5 @@
 using ExpenseConsult.Models;
+using ExpenseConsult.Models.DTO;
 using ExpenseConsult.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,8 +39,14 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] Category category)
+    public async Task<IActionResult> CreateCategory([FromBody] CategoryDto categoryCreateDto)
     {
+        var category = new Category
+        {
+            Id = Guid.NewGuid().ToString(),
+            Name = categoryCreateDto.Name
+        };
+
         try
         {
             await _categoryService.AddCategoryAsync(category);
@@ -49,14 +56,15 @@ public class CategoryController : ControllerBase
             return Conflict(ex.Message);
         }
 
-        await _categoryService.AddCategoryAsync(category);
-
         return Ok();
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(string id, [FromBody] Category category)
+    public async Task<IActionResult> UpdateCategory(string id, [FromBody] CategoryDto categoryDto)
     {
+        var category = await _categoryService.GetCategoryByIdAsync(id);
+        category.Name = categoryDto.Name;
+
         try
         {
             await _categoryService.UpdateCategoryAsync(id, category);

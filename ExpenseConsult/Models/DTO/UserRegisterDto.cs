@@ -1,17 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ExpenseConsult.Models.DTO
+namespace ExpenseConsult.Models.DTO;
+
+public class UserRegisterDto
 {
-    public class UserRegisterDto
-    {
-        [Required(ErrorMessage ="Username is required")]
-        public string Username { get; set; }
+    [Required(ErrorMessage ="Username is required")]
+    public string Username { get; set; }
 
-        [EmailAddress]
-        [Required(ErrorMessage = "Email is required")]
-        public string Email { get; set; }
+    [EmailAddress]
+    [Required(ErrorMessage = "Email is required")]
+    public string Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
-        public string Password { get; set; }
-    }
+    [Required(ErrorMessage = "Password is required")]
+    public string Password { get; set; }
 }

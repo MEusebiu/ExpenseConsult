@@ -7,6 +7,7 @@ using ExpenseConsult.Services;
 using ExpenseConsult.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System.Collections.Concurrent;
 
@@ -18,12 +19,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 services.AddDbContext<AppDbContext>(options => 
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), schema => schema.SchemaBehavior(MySqlSchemaBehavior.Ignore)));
 
-// Add Identity
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// Enable authentication with cookies
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/api/auth/login"; 
@@ -40,14 +39,38 @@ services.AddTransient<IExpenseService, ExpenseService>();
 
 services.AddHostedService<ExpenseCacheInitializer>();
 services.AddHostedService<CategoryCacheInitializer>();
-//services.AddHostedService<UserCacheInitializer>();
 
 services.AddAuthentication();
 services.AddAuthorization();
 services.AddControllers();
 
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
+
+services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("cookieAuth", new OpenApiSecurityScheme
+    {
+        Name = "Cookie",
+        Type = SecuritySchemeType.ApiKey,
+        In = ParameterLocation.Header,
+        Description = "Session-based authentication. Enter your '.AspNetCore.Identity.Application' cookie value."
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "cookieAuth"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 var app = builder.Build();
 
