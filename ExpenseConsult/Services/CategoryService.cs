@@ -6,9 +6,9 @@ namespace ExpenseConsult.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IRepository<int, Category> _categoryRepository;
+        private readonly IRepository<string, Category> _categoryRepository;
 
-        public CategoryService(IRepository<int, Category> categoryRepository)
+        public CategoryService(IRepository<string, Category> categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }
@@ -18,7 +18,7 @@ namespace ExpenseConsult.Services
             return await _categoryRepository.GetAllAsync();
         }
 
-        public async Task<Category> GetCategoryByIdAsync(int id)
+        public async Task<Category> GetCategoryByIdAsync(string id)
         {
             return await _categoryRepository.GetByIdAsync(id);
         }
@@ -30,14 +30,14 @@ namespace ExpenseConsult.Services
             await _categoryRepository.AddAsync(category);
         }
 
-        public async Task UpdateCategoryAsync(int key, Category category)
+        public async Task UpdateCategoryAsync(string key, Category category)
         {
             CheckForDuplicateCategory(category);
 
             await _categoryRepository.UpdateAsync(key, category);
         }
 
-        public async Task DeleteCategoryAsync(int id)
+        public async Task DeleteCategoryAsync(string id)
         {
             await _categoryRepository.DeleteAsync(id);
         }

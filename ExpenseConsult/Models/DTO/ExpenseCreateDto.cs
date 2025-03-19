@@ -8,10 +8,10 @@ namespace ExpenseConsult.Models.DTO
         public decimal Amount { get; set; }
 
         [Required]
-        public int CategoryId { get; set; }
+        public string CategoryId { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         public string Description { get; set; }
     }

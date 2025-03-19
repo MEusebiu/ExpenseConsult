@@ -16,7 +16,7 @@ namespace ExpenseConsult.Initializers
         {
             using (var scope = _scopeFactory.CreateScope())
             {
-                var categoryRepository = scope.ServiceProvider.GetRequiredService<IRepository<int, Category>>();
+                var categoryRepository = scope.ServiceProvider.GetRequiredService<IRepository<string, Category>>();
                 await categoryRepository.LoadCacheAsync();
             }
         }

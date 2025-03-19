@@ -5,8 +5,8 @@ namespace ExpenseConsult.Services.Interfaces;
 public interface ICategoryService
 {
     Task<IEnumerable<Category>> GetCategoriesAsync();
-    Task<Category> GetCategoryByIdAsync(int id);
+    Task<Category> GetCategoryByIdAsync(string id);
     Task AddCategoryAsync(Category category);
-    Task UpdateCategoryAsync(int key, Category category);
-    Task DeleteCategoryAsync(int id);
+    Task UpdateCategoryAsync(string key, Category category);
+    Task DeleteCategoryAsync(string id);
 }

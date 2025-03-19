@@ -6,9 +6,9 @@ namespace ExpenseConsult.Services
 {
     public class UserService : IUserService
     {
-        private readonly IRepository<int, User> _userRepository;
+        private readonly IRepository<string, User> _userRepository;
 
-        public UserService(IRepository<int, User> userRepository)
+        public UserService(IRepository<string, User> userRepository)
         {
             _userRepository = userRepository;
         }
@@ -18,7 +18,7 @@ namespace ExpenseConsult.Services
             return await _userRepository.GetAllAsync();
         }
 
-        public async Task<User> GetUserByIdAsync(int id)
+        public async Task<User> GetUserByIdAsync(string id)
         {
             return await _userRepository.GetByIdAsync(id);
         }
@@ -29,12 +29,12 @@ namespace ExpenseConsult.Services
             await _userRepository.AddAsync(user);
         }
 
-        public async Task UpdateUserAsync(int key, User user)
+        public async Task UpdateUserAsync(string key, User user)
         {
             await _userRepository.UpdateAsync(key, user);
         }
 
-        public async Task DeleteUserAsync(int id)
+        public async Task DeleteUserAsync(string id)
         {
             await _userRepository.DeleteAsync(id);
         }

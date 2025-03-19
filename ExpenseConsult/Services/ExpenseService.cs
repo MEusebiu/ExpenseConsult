@@ -6,9 +6,9 @@ namespace ExpenseConsult.Services
 {
     public class ExpenseService : IExpenseService
     {
-        private readonly IRepository<int, Expense> _expenseRepository;
+        private readonly IRepository<string, Expense> _expenseRepository;
 
-        public ExpenseService(IRepository<int, Expense> expenseRepository)
+        public ExpenseService(IRepository<string, Expense> expenseRepository)
         {
             _expenseRepository = expenseRepository;
         }
@@ -18,7 +18,7 @@ namespace ExpenseConsult.Services
             return await _expenseRepository.GetAllAsync();
         }
 
-        public async Task<Expense> GetExpenseByIdAsync(int id)
+        public async Task<Expense> GetExpenseByIdAsync(string id)
         {
             return await _expenseRepository.GetByIdAsync(id);
         }
@@ -28,12 +28,12 @@ namespace ExpenseConsult.Services
             await _expenseRepository.AddAsync(expense);
         }
 
-        public async Task UpdateExpenseAsync(int key, Expense expense)
+        public async Task UpdateExpenseAsync(string key, Expense expense)
         {
             await _expenseRepository.UpdateAsync(key, expense);
         }
 
-        public async Task DeleteExpenseAsync(int id)
+        public async Task DeleteExpenseAsync(string id)
         {
             await _expenseRepository.DeleteAsync(id);
         }

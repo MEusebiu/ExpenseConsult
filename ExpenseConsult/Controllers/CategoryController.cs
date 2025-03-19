@@ -1,9 +1,11 @@
 using ExpenseConsult.Models;
 using ExpenseConsult.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseConsult.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CategoryController : ControllerBase
@@ -24,7 +26,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetCategoryById(int id)
+    public async Task<IActionResult> GetCategoryById(string id)
     {
         var category = await _categoryService.GetCategoryByIdAsync(id);
         if (category == null)
@@ -53,7 +55,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(int id, [FromBody] Category category)
+    public async Task<IActionResult> UpdateCategory(string id, [FromBody] Category category)
     {
         try
         {
@@ -68,7 +70,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCategory(int id)
+    public async Task<IActionResult> DeleteCategory(string id)
     {
         await _categoryService.DeleteCategoryAsync(id);
 

@@ -6,12 +6,12 @@ namespace ExpenseConsult.Services.Interfaces
     {
         Task<IEnumerable<Expense>> GetExpensesAsync();
 
-        Task<Expense> GetExpenseByIdAsync(int id);
+        Task<Expense> GetExpenseByIdAsync(string id);
 
         Task AddExpenseAsync(Expense expense);
 
-        Task UpdateExpenseAsync(int id, Expense expense);
+        Task UpdateExpenseAsync(string id, Expense expense);
 
-        Task DeleteExpenseAsync(int id);
+        Task DeleteExpenseAsync(string id);
     }
 }
