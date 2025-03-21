@@ -1,8 +1,8 @@
-﻿using ExpenseConsult.Models;
+﻿using ExpenseDataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpenseConsult.Data
+namespace DataAccessLayer
 {
     public class AppDbContext : IdentityDbContext<User>
     {

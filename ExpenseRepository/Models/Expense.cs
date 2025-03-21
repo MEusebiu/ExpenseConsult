@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace ExpenseConsult.Models;
+namespace ExpenseDataAccessLayer.Models;
 
 public class Expense
 {

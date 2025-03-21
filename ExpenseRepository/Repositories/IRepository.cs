@@ -1,5 +1,4 @@
-﻿namespace ExpenseConsult.Repositories;
-
+﻿namespace ExpenseDataAccessLayer.Repositories;
 public interface IRepository<TKey, TValue> where TValue : class
 {
     Task<IEnumerable<TValue>> GetAllAsync();

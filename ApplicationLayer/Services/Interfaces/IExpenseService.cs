@@ -1,6 +1,6 @@
-﻿using ExpenseConsult.Models;
+﻿using ExpenseDataAccessLayer.Models;
 
-namespace ExpenseConsult.Services.Interfaces;
+namespace ExpenseServices.Services.Interfaces;
 
 public interface IExpenseService
 {

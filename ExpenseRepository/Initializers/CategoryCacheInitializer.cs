@@ -1,7 +1,9 @@
-﻿using ExpenseConsult.Models;
-using ExpenseConsult.Repositories;
+﻿using ExpenseDataAccessLayer.Models;
+using ExpenseDataAccessLayer.Repositories;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace ExpenseConsult.Initializers
+namespace ExpenseDataAccessLayer.Initializers
 {
     public class CategoryCacheInitializer : IHostedService
     {

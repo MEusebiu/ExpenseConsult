@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace ExpenseConsult.Models;
+namespace ExpenseDataAccessLayer.Models;
 
 public class Category
 {

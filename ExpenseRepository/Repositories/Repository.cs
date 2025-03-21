@@ -1,8 +1,8 @@
-﻿using ExpenseConsult.Data;
+﻿using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 
-namespace ExpenseConsult.Repositories
+namespace ExpenseDataAccessLayer.Repositories
 {
     public class Repository<TKey, TValue> : IRepository<TKey, TValue> where TValue : class
     {

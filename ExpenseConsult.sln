@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseConsult", "ExpenseConsult\ExpenseConsult.csproj", "{8F3D9558-D520-4AE3-89BE-94B5D84B9099}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseWebAPI", "ExpenseConsult\ExpenseWebAPI.csproj", "{8F3D9558-D520-4AE3-89BE-94B5D84B9099}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseDataAccessLayer", "ExpenseRepository\ExpenseDataAccessLayer.csproj", "{3A5983DE-6402-48F6-B5C3-C4FFDB4D9089}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseServices", "ApplicationLayer\ExpenseServices.csproj", "{3FB9BC1C-6965-4399-94AA-0CA5002761E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{8F3D9558-D520-4AE3-89BE-94B5D84B9099}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F3D9558-D520-4AE3-89BE-94B5D84B9099}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F3D9558-D520-4AE3-89BE-94B5D84B9099}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A5983DE-6402-48F6-B5C3-C4FFDB4D9089}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A5983DE-6402-48F6-B5C3-C4FFDB4D9089}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A5983DE-6402-48F6-B5C3-C4FFDB4D9089}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A5983DE-6402-48F6-B5C3-C4FFDB4D9089}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FB9BC1C-6965-4399-94AA-0CA5002761E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FB9BC1C-6965-4399-94AA-0CA5002761E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FB9BC1C-6965-4399-94AA-0CA5002761E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FB9BC1C-6965-4399-94AA-0CA5002761E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

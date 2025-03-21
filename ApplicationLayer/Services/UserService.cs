@@ -1,8 +1,8 @@
-﻿using ExpenseConsult.Models;
-using ExpenseConsult.Repositories;
-using ExpenseConsult.Services.Interfaces;
+﻿using ExpenseDataAccessLayer.Models;
+using ExpenseDataAccessLayer.Repositories;
+using ExpenseServices.Services.Interfaces;
 
-namespace ExpenseConsult.Services;
+namespace ExpenseServices.Services;
 
 public class UserService : IUserService
 {

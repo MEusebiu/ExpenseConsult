@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ExpenseConsult.Migrations
+namespace ExpenseDataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class StartFromZeroMigration : Migration
+    public partial class NTierArchitecture : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

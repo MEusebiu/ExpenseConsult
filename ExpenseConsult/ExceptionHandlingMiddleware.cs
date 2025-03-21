@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ExpenseConsult;
+namespace ExpenseWebApi;
 
 public class ExceptionHandlingMiddleware
 {

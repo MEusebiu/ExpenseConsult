@@ -1,12 +1,10 @@
-using ExpenseConsult.Models;
-using ExpenseConsult.Models.DTO;
-using ExpenseConsult.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+using ExpenseDataAccessLayer.Models;
+using ExpenseServices.Services.Interfaces;
+using ExpenseWebApi.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ExpenseConsult.Controllers;
+namespace ExpenseWebApi.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CategoryController : ControllerBase
@@ -39,12 +37,12 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] CategoryDto categoryCreateDto)
+    public async Task<IActionResult> CreateCategory([FromBody] CategoryDto categoryDto)
     {
         var category = new Category
         {
             Id = Guid.NewGuid().ToString(),
-            Name = categoryCreateDto.Name
+            Name = categoryDto.Name
         };
 
         try

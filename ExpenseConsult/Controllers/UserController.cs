@@ -3,7 +3,7 @@
 //using ExpenseConsult.Services.Interfaces;
 //using Microsoft.AspNetCore.Mvc;
 
-//namespace ExpenseConsult.Controllers;
+//namespace ExpenseWebApi.Controllers;
 
 //[ApiController]
 //[Route("api/[controller]")]

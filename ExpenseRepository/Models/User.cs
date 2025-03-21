@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ExpenseConsult.Models;
+namespace ExpenseDataAccessLayer.Models;
 
 public class User : IdentityUser
 {

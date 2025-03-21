@@ -1,10 +1,10 @@
-﻿using ExpenseConsult.Models;
-using ExpenseConsult.Models.DTO;
+﻿using ExpenseDataAccessLayer.Models;
+using ExpenseWebApi.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ExpenseConsult.Controllers
+namespace ExpenseWebApi.Controllers
 {
     [AllowAnonymous]
     [ApiController]

@@ -1,4 +1,4 @@
-﻿namespace ExpenseConsult;
+﻿namespace ExpenseWebApi;
 
 public class BackgroundWorkerService : BackgroundService
 {
@@ -11,10 +11,11 @@ public class BackgroundWorkerService : BackgroundService
 
     protected async override Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        var interval = 5000;
         while (!stoppingToken.IsCancellationRequested)
         {
-            _logger.LogInformation("Background worker is running in the background");
-            await Task.Delay(1000, stoppingToken);
+            _logger.LogInformation($"Background worker is running every {interval} in the background");
+            await Task.Delay(interval, stoppingToken);
         }
     }
 }

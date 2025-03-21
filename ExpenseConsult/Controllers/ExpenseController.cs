@@ -1,12 +1,10 @@
-using ExpenseConsult.Models;
-using ExpenseConsult.Models.DTO;
-using ExpenseConsult.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+using ExpenseDataAccessLayer.Models;
+using ExpenseServices.Services.Interfaces;
+using ExpenseWebApi.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ExpenseConsult.Controllers;
+namespace ExpenseWebApi.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ExpenseController : ControllerBase

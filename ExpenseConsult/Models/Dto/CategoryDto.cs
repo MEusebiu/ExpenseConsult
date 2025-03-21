@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ExpenseConsult.Models.DTO;
+namespace ExpenseWebApi.Models.DTO;
 
 public class CategoryDto
 {
