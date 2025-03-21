@@ -32,13 +32,14 @@ builder.Services.ConfigureApplicationCookie(options =>
 services.AddSingleton(new ConcurrentDictionary<string, Expense>());
 services.AddSingleton(new ConcurrentDictionary<string, Category>());
 services.AddSingleton(new ConcurrentDictionary<string, User>());
-services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
 services.AddTransient<ICategoryService, CategoryService>();
 services.AddTransient<IUserService, UserService>();
 services.AddTransient<IExpenseService, ExpenseService>();
 
 services.AddHostedService<ExpenseCacheInitializer>();
 services.AddHostedService<CategoryCacheInitializer>();
+services.AddHostedService<BackgroundWorkerService>();
 
 services.AddAuthentication();
 services.AddAuthorization();
