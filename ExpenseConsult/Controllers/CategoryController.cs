@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using ExpenseDataAccessLayer.Models;
 using ExpenseServices.Services.Interfaces;
 using ExpenseWebApi.Models.DTO;
@@ -5,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseWebApi.Controllers;
 
+[ApiVersion("1.0")]
+[ApiVersion("2.0")]
+[Route("api/v{version:apiVersion}/[Controller]")]
 [ApiController]
-[Route("api/[controller]")]
 public class CategoryController : ControllerBase
 {
     private ICategoryService _categoryService;
@@ -17,6 +20,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
+    [MapToApiVersion("1.0")]
     public async Task<IActionResult> GetCategories()
     {
         var categories = await _categoryService.GetCategoriesAsync();
@@ -25,6 +29,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [MapToApiVersion("1.0")]
     public async Task<IActionResult> GetCategoryById(string id)
     {
         var category = await _categoryService.GetCategoryByIdAsync(id);
@@ -37,6 +42,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
+    [MapToApiVersion("1.0")]
     public async Task<IActionResult> CreateCategory([FromBody] CategoryDto categoryDto)
     {
         var category = new Category
@@ -58,6 +64,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [MapToApiVersion("1.0")]
     public async Task<IActionResult> UpdateCategory(string id, [FromBody] CategoryDto categoryDto)
     {
         var category = await _categoryService.GetCategoryByIdAsync(id);
@@ -76,10 +83,25 @@ public class CategoryController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [MapToApiVersion("1.0")]
     public async Task<IActionResult> DeleteCategory(string id)
     {
         await _categoryService.DeleteCategoryAsync(id);
 
         return Ok(); 
+    }
+
+    [HttpGet("GetTeam")]
+    [MapToApiVersion("1.0")]
+    public IActionResult GetV1()
+    {
+        return Ok("V1 Get to be implemented");
+    }
+
+    [HttpGet("GetTeam")]
+    [MapToApiVersion("2.0")]
+    public IActionResult GetV2()
+    {
+        return Ok("V2 Get to be implemented");
     }
 }
