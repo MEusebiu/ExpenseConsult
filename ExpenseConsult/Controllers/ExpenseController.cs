@@ -24,6 +24,33 @@ public class ExpenseController : ControllerBase
         return Ok(expenses);
     }
 
+    [HttpGet("filter-by-category")]
+    public async Task<IActionResult> GetProductsByCategory(string categoryId)
+    {
+        var expenses = await _expenseService.GetExpensesByCategoryAsync(categoryId);
+        return Ok(expenses);
+    }
+
+    [HttpGet("filter-by-amount")]
+    public async Task<IActionResult> GetExpensesInAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
+    {
+        var filteredExpenses = await _expenseService.GetExpensesAmountInterval(minAmount, maxAmount);
+        return Ok(filteredExpenses);
+    }
+
+    [HttpGet("filter-by-date")]
+    public async Task<IActionResult> GetExpensesInDateRange([FromQuery] string minDate, [FromQuery] string maxDate)
+    {
+
+        if (!DateTime.TryParse(minDate, out var minDateParsed) || !DateTime.TryParse(maxDate, out var maxDateParsed))
+        {
+            return BadRequest("Invalid date format");
+        }
+
+        var filteredExpenses = await _expenseService.GetExpensesDatesInterval(minDateParsed, maxDateParsed);
+        return Ok(filteredExpenses);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetExpense(string id)
     {

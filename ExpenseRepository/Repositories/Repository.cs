@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
+using ExpenseDataAccessLayer.Interfaces;
 
 namespace ExpenseDataAccessLayer.Repositories
 {

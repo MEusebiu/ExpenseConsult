@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer;
 using ExpenseDataAccessLayer.Initializers;
+using ExpenseDataAccessLayer.Interfaces;
 using ExpenseDataAccessLayer.Models;
 using ExpenseDataAccessLayer.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +25,8 @@ namespace ExpenseDataAccessLayer
 
             services.AddHostedService<ExpenseCacheInitializer>();
             services.AddHostedService<CategoryCacheInitializer>();
+
+            services.AddTransient<IExpenseRepository, ExpenseRepository>();
 
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
 

@@ -16,6 +16,8 @@ public class Expense
 
     public string CategoryId { get; set; }
 
+    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
     [JsonIgnore]
     [ForeignKey("CategoryId")]
     public virtual Category Category { get; set; }
