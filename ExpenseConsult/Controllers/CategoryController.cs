@@ -13,10 +13,12 @@ namespace ExpenseWebApi.Controllers;
 public class CategoryController : ControllerBase
 {
     private ICategoryService _categoryService;
+    private ILogger<CategoryController> _logger;
 
-    public CategoryController(ICategoryService categoryService)
+    public CategoryController(ICategoryService categoryService, ILogger<CategoryController> logger)
     {
         _categoryService = categoryService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -24,6 +26,7 @@ public class CategoryController : ControllerBase
     public async Task<IActionResult> GetCategories()
     {
         var categories = await _categoryService.GetCategoriesAsync();
+        _logger.LogInformation("Successfully fetched {Count} categories", categories.ToList().Count);
 
         return Ok(categories);
     }
@@ -37,6 +40,7 @@ public class CategoryController : ControllerBase
         {
             return NotFound();
         }
+        _logger.LogInformation("Successfully fetched {categoryName}", category.Name);
 
         return Ok(category);
     }
@@ -60,6 +64,8 @@ public class CategoryController : ControllerBase
             return Conflict(ex.Message);
         }
 
+        _logger.LogInformation("Successfully created {categoryName}", category.Name);
+
         return Ok();
     }
 
@@ -79,6 +85,8 @@ public class CategoryController : ControllerBase
             return Conflict(ex.Message);
         }
 
+        _logger.LogInformation("Successfully updated {categoryName}", category.Name);
+
         return Ok();
     }
 
@@ -88,8 +96,13 @@ public class CategoryController : ControllerBase
     {
         await _categoryService.DeleteCategoryAsync(id);
 
+        _logger.LogInformation("Category successfully deleted");
+
         return Ok(); 
     }
+
+
+    // Version 2 API
 
     [HttpGet]
     [MapToApiVersion("2.0")]
@@ -97,6 +110,8 @@ public class CategoryController : ControllerBase
     {
         var categories = await _categoryService.GetCategoriesAsync();
         var categoryNames = categories.Select(c => c.Name);
+
+        _logger.LogInformation("Successfully fetched {Count} category names", categories.ToList().Count);
 
         return Ok(categoryNames);
     }

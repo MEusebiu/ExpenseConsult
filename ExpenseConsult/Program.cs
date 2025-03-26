@@ -4,6 +4,7 @@ using ExpenseServices;
 using ExpenseDataAccessLayer;
 using Microsoft.OpenApi.Models;
 using Asp.Versioning.ApiExplorer;
+using ExpenseWebAPI.BackgroundWorkers;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +32,7 @@ builder.Services.AddApiVersioning(option =>
 services.AddDataAccess(builder.Configuration);
 services.AddApplicationServices();
 
-services.AddHostedService<BackgroundWorkerService>();
+services.AddHostedService<CryptoDataFetchWorker>();
 
 services.AddAuthentication();
 services.AddAuthorization();

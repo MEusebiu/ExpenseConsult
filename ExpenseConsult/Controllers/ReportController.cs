@@ -13,10 +13,12 @@ namespace ExpenseWebAPI.Controllers
     public class ReportController : ControllerBase
     {
         private ICategoryService _categoryService;
-
-        public ReportController(ICategoryService categoryService)
+        private ILogger<ReportController> _logger;
+        public ReportController(ICategoryService categoryService, ILogger<ReportController> logger)
         {
             _categoryService = categoryService;
+            _logger = logger;
+
             QuestPDF.Settings.License = LicenseType.Community;
         }
 
@@ -27,6 +29,8 @@ namespace ExpenseWebAPI.Controllers
             var groupedExpenses = await _categoryService.GetReportInformation(userId);
 
             var pdfBytes = GeneratePdf(groupedExpenses);
+
+            _logger.LogInformation("Successfully generated pdf file");
 
             return File(pdfBytes, "application/pdf", "ExpenseReport.pdf");
         }
@@ -60,10 +64,10 @@ namespace ExpenseWebAPI.Controllers
                             {
                                 table.ColumnsDefinition(columns =>
                                 {
-                                    columns.ConstantColumn(50);  // #
-                                    columns.RelativeColumn(2);  // Description
-                                    columns.RelativeColumn(1);  // Amount
-                                    columns.RelativeColumn(1);  // Date
+                                    columns.ConstantColumn(50);  
+                                    columns.RelativeColumn(2);  
+                                    columns.RelativeColumn(1);  
+                                    columns.RelativeColumn(1);  
                                 });
 
                                 table.Header(header =>
