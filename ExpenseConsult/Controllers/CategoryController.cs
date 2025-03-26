@@ -91,17 +91,13 @@ public class CategoryController : ControllerBase
         return Ok(); 
     }
 
-    [HttpGet("GetTeam")]
-    [MapToApiVersion("1.0")]
-    public IActionResult GetV1()
-    {
-        return Ok("V1 Get to be implemented");
-    }
-
-    [HttpGet("GetTeam")]
+    [HttpGet]
     [MapToApiVersion("2.0")]
-    public IActionResult GetV2()
+    public async Task<IActionResult> GetCategoriesNames()
     {
-        return Ok("V2 Get to be implemented");
+        var categories = await _categoryService.GetCategoriesAsync();
+        var categoryNames = categories.Select(c => c.Name);
+
+        return Ok(categoryNames);
     }
 }
