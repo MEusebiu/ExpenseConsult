@@ -11,15 +11,18 @@ namespace ExpenseTests;
 [TestFixture]
 public class CategoryServiceTests
 {
+    private ICategoryRepository _categoryRepository;
+    private IRepository<string, Category> _repository;
     private ICategoryService _categoryService;
-    private IRepository<string, Category> _categoryRepository;
 
     [SetUp]
     public void SetUp()
     {
-        _categoryRepository = Substitute.For<IRepository<string, Category>>();
+        _repository = Substitute.For<IRepository<string, Category>>();
+        _categoryRepository = Substitute.For<ICategoryRepository>();
+        _categoryService = Substitute.For<ICategoryService>();
 
-        _categoryService = new CategoryService(_categoryRepository);
+        _categoryService = new CategoryService(_repository, _categoryRepository, _categoryService);
     }
 
     [Test]
@@ -31,7 +34,7 @@ public class CategoryServiceTests
             new () { Id = "1", Name = "Food" },
             new () { Id = "2", Name = "Transport" }
         };
-        _categoryRepository.GetAllAsync().Returns(categories);
+        _repository.GetAllAsync().Returns(categories);
 
         // Act
         var result = await _categoryService.GetCategoriesAsync();
@@ -45,7 +48,7 @@ public class CategoryServiceTests
     {
         // Arrange
         var category = new Category { Id = "1", Name = "Food" };
-        _categoryRepository.GetByIdAsync("1").Returns(category);
+        _repository.GetByIdAsync("1").Returns(category);
 
         // Act
         var result = await _categoryService.GetCategoryByIdAsync("1");
@@ -58,7 +61,7 @@ public class CategoryServiceTests
     public async Task When_CategoryDoesNotExist_Then_GetCategoryByIdAsync_Should_Return_Null()
     {
         // Arrange
-        _categoryRepository.GetByIdAsync("99").Returns((Category)null);
+        _repository.GetByIdAsync("99").Returns((Category)null);
 
         // Act
         var result = await _categoryService.GetCategoryByIdAsync("99");
@@ -73,7 +76,7 @@ public class CategoryServiceTests
         // Arrange
         var existingCategory = new Category { Id = "1", Name = "Food" };
         var newCategory = new Category { Id = "2", Name = "Food" };
-        _categoryRepository.GetAllAsync().Returns(new List<Category> { existingCategory });
+        _repository.GetAllAsync().Returns(new List<Category> { existingCategory });
 
         // Act & Assert
         Func<Task> act = async () => await _categoryService.AddCategoryAsync(newCategory);
@@ -91,7 +94,7 @@ public class CategoryServiceTests
         await _categoryService.AddCategoryAsync(newCategory);
 
         // Assert
-        await _categoryRepository.Received(1).AddAsync(newCategory);
+        await _repository.Received(1).AddAsync(newCategory);
     }
 
     [Test]
@@ -100,7 +103,7 @@ public class CategoryServiceTests
         // Arrange
         var existingCategory = new Category { Id = "1", Name = "Food" };
         var categoryToUpdate = new Category { Id = "2", Name = "Food" };
-        _categoryRepository.GetAllAsync().Returns(new List<Category> { existingCategory });
+        _repository.GetAllAsync().Returns(new List<Category> { existingCategory });
 
         // Act & Assert
         Func<Task> act = async () => await _categoryService.UpdateCategoryAsync("2", categoryToUpdate);
@@ -118,19 +121,19 @@ public class CategoryServiceTests
         await _categoryService.UpdateCategoryAsync("2", categoryToUpdate);
 
         // Assert
-        await _categoryRepository.Received(1).UpdateAsync("2", categoryToUpdate);
+        await _repository.Received(1).UpdateAsync("2", categoryToUpdate);
     }
 
     [Test]
     public async Task When_DeleteCategoryAsync_Then_Should_CallRepositoryDelete()
     {
         // Arrange
-        _categoryRepository.DeleteAsync("1").Returns(Task.CompletedTask);
+        _repository.DeleteAsync("1").Returns(Task.CompletedTask);
 
         // Act
         await _categoryService.DeleteCategoryAsync("1");
 
         // Assert
-        await _categoryRepository.Received(1).DeleteAsync("1");
+        await _repository.Received(1).DeleteAsync("1");
     }
 }

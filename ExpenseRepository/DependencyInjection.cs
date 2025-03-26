@@ -27,6 +27,7 @@ namespace ExpenseDataAccessLayer
             services.AddHostedService<CategoryCacheInitializer>();
 
             services.AddTransient<IExpenseRepository, ExpenseRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
 
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
 
