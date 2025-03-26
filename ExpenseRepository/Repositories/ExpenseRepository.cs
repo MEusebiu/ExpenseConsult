@@ -12,24 +12,24 @@ class ExpenseRepository : IExpenseRepository
         _repository = repository;
     }
 
-    public async Task<IEnumerable<Expense>> GetExpensesByCategoryAsync(string categoryId)
+    public async Task<IEnumerable<Expense>> GetExpensesByCategoryAsync(string userId, string categoryId)
     {
         var allExpenses = await _repository.GetAllAsync();
-        var categoryExpenses = allExpenses.Where(e => e.CategoryId == categoryId);
+        var categoryExpenses = allExpenses.Where(e => e.CategoryId == categoryId && e.UserId == userId);
         return categoryExpenses;
     }
 
-    public async Task<IEnumerable<Expense>> GetExpensesAmountInterval(decimal minAmount, decimal maxAmount)
+    public async Task<IEnumerable<Expense>> GetExpensesAmountInterval(string userId, decimal minAmount, decimal maxAmount )
     {
         var allExpenses = await _repository.GetAllAsync();
-        var filteredExpenses = allExpenses.Where(e => e.Amount >= minAmount && e.Amount <= maxAmount);
+        var filteredExpenses = allExpenses.Where(e => e.UserId == userId && e.Amount >= minAmount && e.Amount <= maxAmount);
         return filteredExpenses;
     }
 
-    public async Task<IEnumerable<Expense>> GetExpensesDatesInterval(DateTime minDate, DateTime maxDate)
+    public async Task<IEnumerable<Expense>> GetExpensesDatesInterval(string userId, DateTime minDate, DateTime maxDate)
     {
         var allExpenses = await _repository.GetAllAsync();
-        var filteredExpenses = allExpenses.Where(e => e.CreatedDate >= minDate && e.CreatedDate <= maxDate);
+        var filteredExpenses = allExpenses.Where(e => e.UserId == userId && e.CreatedDate >= minDate && e.CreatedDate <= maxDate);
         return filteredExpenses;
     }
 }

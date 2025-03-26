@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using System.Security.Claims;
 
 namespace ExpenseWebAPI.Controllers
 {
@@ -22,7 +23,8 @@ namespace ExpenseWebAPI.Controllers
         [HttpGet("generate-pdf")]
         public async Task<IActionResult> GenerateExpenseReport()
         {
-            var groupedExpenses = await _categoryService.GetReportInformation();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var groupedExpenses = await _categoryService.GetReportInformation(userId);
 
             var pdfBytes = GeneratePdf(groupedExpenses);
 
@@ -88,7 +90,8 @@ namespace ExpenseWebAPI.Controllers
 
                     page.Footer()
                         .AlignRight()
-                        .Text($"Generated on {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
+                        .Text($"Generated at {DateTime.UtcNow:ddd dd-MM-yyyy HH:mm}")
+                        .FontSize(12);
                 });
             }).GeneratePdf();
 

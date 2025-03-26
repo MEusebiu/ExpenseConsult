@@ -8,13 +8,14 @@ using NUnit.Framework;
 
 namespace ExpenseTests
 {
-
     [TestFixture]
     public class ExpenseServiceTests
     {
         private IRepository<string, Expense> _repository;
         private IExpenseRepository _expenseRepository;
         private IExpenseService _expenseService;
+
+        private const string UserId = "userId";
 
         [SetUp]
         public void SetUp()
@@ -29,11 +30,11 @@ namespace ExpenseTests
         public async Task When_GetExpensesAsync_Then_Should_ReturnExpenses()
         {
             // Arrange
-            var expenses = new List<Expense> { new() { Id = "1", Amount = 100 } };
+            var expenses = new List<Expense> { new() { Id = "1", Amount = 100, UserId = UserId } };
             _repository.GetAllAsync().Returns(expenses);
 
             // Act
-            var result = await _expenseService.GetExpensesAsync();
+            var result = await _expenseService.GetUserExpensesAsync(UserId);
 
             // Assert
             result.Should().BeEquivalentTo(expenses);
@@ -43,11 +44,11 @@ namespace ExpenseTests
         public async Task When_GetExpenseByIdAsync_Then_Should_ReturnCorrectExpense()
         {
             // Arrange
-            var expense = new Expense { Id = "1", Amount = 100 };
+            var expense = new Expense { Id = "1", Amount = 100, UserId = UserId };
             _repository.GetByIdAsync("1").Returns(expense);
 
             // Act
-            var result = await _expenseService.GetExpenseByIdAsync("1");
+            var result = await _expenseService.GetExpenseByIdAsync(UserId, "1");
 
             // Assert
             result.Should().Be(expense);
@@ -94,11 +95,11 @@ namespace ExpenseTests
         {
             // Arrange
             var categoryId = Guid.NewGuid().ToString();
-            var expenses = new List<Expense> { new() { Id = "1", Amount = 100, CategoryId = categoryId } };
-            _expenseRepository.GetExpensesByCategoryAsync(categoryId).Returns(expenses);
+            var expenses = new List<Expense> { new() { Id = "1", Amount = 100, CategoryId = categoryId, UserId = UserId } };
+            _expenseRepository.GetExpensesByCategoryAsync(UserId, categoryId).Returns(expenses);
 
             // Act
-            var result = await _expenseService.GetExpensesByCategoryAsync(categoryId);
+            var result = await _expenseService.GetExpensesByCategoryAsync(UserId, categoryId);
 
             // Assert
             result.Should().BeEquivalentTo(expenses);
@@ -108,14 +109,57 @@ namespace ExpenseTests
         public async Task When_GetExpensesAmountInterval_Then_Should_ReturnExpensesWithinAmountRange()
         {
             // Arrange
-            var expenses = new List<Expense> { new() { Id = "1", Amount = 150 } };
-            _expenseRepository.GetExpensesAmountInterval(100, 200).Returns(expenses);
+            var expenses = new List<Expense> { new() { Id = "1", Amount = 150, UserId = UserId } };
+            _expenseRepository.GetExpensesAmountInterval(UserId, 100, 200).Returns(expenses);
 
             // Act
-            var result = await _expenseService.GetExpensesAmountInterval(100, 200);
+            var result = await _expenseService.GetExpensesAmountInterval(UserId, 100, 200);
 
             // Assert
             result.Should().BeEquivalentTo(expenses);
+        }
+
+        [Test]
+        public async Task When_GetExpensesByCategoryAsync_Then_Should_ReturnExpensesByCategory()
+        {
+            // Arrange
+            var categoryId = "category1";
+            var expectedExpenses = new List<Expense>
+            {
+                new () { Id = "1", UserId = UserId, CategoryId = categoryId, Amount = 100 },
+                new () { Id = "2", UserId = UserId, CategoryId = categoryId, Amount = 200 }
+            };
+
+            _expenseRepository.GetExpensesByCategoryAsync(UserId, categoryId).Returns(expectedExpenses);
+
+            // Act
+            var result = await _expenseService.GetExpensesByCategoryAsync(UserId, categoryId);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedExpenses);
+            await _expenseRepository.Received(1).GetExpensesByCategoryAsync(UserId, categoryId);
+        }
+
+        [Test]
+        public async Task When_GetExpensesAmountInterval_Then_Should_ReturnExpensesWithinInterval()
+        {
+            // Arrange
+            var minAmount = 50m;
+            var maxAmount = 200m;
+            var expectedExpenses = new List<Expense>
+            {
+                new () { Id = "1", UserId = UserId, Amount = 75 },
+                new () { Id = "2", UserId = UserId, Amount = 150 }
+            };
+
+            _expenseRepository.GetExpensesAmountInterval(UserId, minAmount, maxAmount).Returns(expectedExpenses);
+
+            // Act
+            var result = await _expenseService.GetExpensesAmountInterval(UserId, minAmount, maxAmount);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedExpenses);
+            await _expenseRepository.Received(1).GetExpensesAmountInterval(UserId, minAmount, maxAmount);
         }
 
         [Test]
@@ -124,14 +168,20 @@ namespace ExpenseTests
             // Arrange
             var minDate = new DateTime(2024, 1, 1);
             var maxDate = new DateTime(2024, 12, 31);
-            var expenses = new List<Expense> { new() { Id = "1", CreatedDate = new DateTime(2024, 6, 15) } };
-            _expenseRepository.GetExpensesDatesInterval(minDate, maxDate).Returns(expenses);
+            var expectedExpenses = new List<Expense>
+            {
+                new () { Id = "1", UserId = UserId, CreatedDate = new DateTime(2024, 3, 15) },
+                new () { Id = "2", UserId = UserId, CreatedDate = new DateTime(2024, 6, 10) }
+            };
+
+            _expenseRepository.GetExpensesDatesInterval(UserId, minDate, maxDate).Returns(expectedExpenses);
 
             // Act
-            var result = await _expenseService.GetExpensesDatesInterval(minDate, maxDate);
+            var result = await _expenseService.GetExpensesDatesInterval(UserId, minDate, maxDate);
 
             // Assert
-            result.Should().BeEquivalentTo(expenses);
+            result.Should().BeEquivalentTo(expectedExpenses);
+            await _expenseRepository.Received(1).GetExpensesDatesInterval(UserId, minDate, maxDate);
         }
     }
 }

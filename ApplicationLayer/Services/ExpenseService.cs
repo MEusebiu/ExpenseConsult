@@ -15,14 +15,16 @@ public class ExpenseService : IExpenseService
         _expenseRepository = expenseRepository;
     }
 
-    public async Task<IEnumerable<Expense>> GetExpensesAsync()
+    public async Task<IEnumerable<Expense>> GetUserExpensesAsync(string userId)
     {
-        return await _repository.GetAllAsync();
+       var expenses = await _repository.GetAllAsync();
+       return expenses.Where(e => e.UserId == userId);
     }
 
-    public async Task<Expense> GetExpenseByIdAsync(string id)
+    public async Task<Expense> GetExpenseByIdAsync(string userId, string id)
     {
-        return await _repository.GetByIdAsync(id);
+        var expense = await _repository.GetByIdAsync(id);
+        return expense.UserId == userId ? expense : null;
     }
 
     public async Task AddExpenseAsync(Expense expense)
@@ -40,18 +42,18 @@ public class ExpenseService : IExpenseService
         await _repository.DeleteAsync(id);
     }
 
-    public async Task<IEnumerable<Expense>> GetExpensesByCategoryAsync(string categoryId)
+    public async Task<IEnumerable<Expense>> GetExpensesByCategoryAsync(string userId, string categoryId)
     {
-        return await _expenseRepository.GetExpensesByCategoryAsync(categoryId);
+        return await _expenseRepository.GetExpensesByCategoryAsync(userId, categoryId);
     }
 
-    public async Task<IEnumerable<Expense>> GetExpensesAmountInterval(decimal min, decimal max)
+    public async Task<IEnumerable<Expense>> GetExpensesAmountInterval(string userId, decimal min, decimal max)
     {
-        return await _expenseRepository.GetExpensesAmountInterval(min, max);
+        return await _expenseRepository.GetExpensesAmountInterval(userId, min, max);
     }
 
-    public async Task<IEnumerable<Expense>> GetExpensesDatesInterval(DateTime minDate, DateTime maxDate)
+    public async Task<IEnumerable<Expense>> GetExpensesDatesInterval(string userId, DateTime minDate, DateTime maxDate)
     {
-        return await _expenseRepository.GetExpensesDatesInterval(minDate, maxDate);
+        return await _expenseRepository.GetExpensesDatesInterval(userId, minDate, maxDate);
     }
 }

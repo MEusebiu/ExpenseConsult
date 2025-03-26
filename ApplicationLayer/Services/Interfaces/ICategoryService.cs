@@ -9,5 +9,5 @@ public interface ICategoryService
     Task AddCategoryAsync(Category category);
     Task UpdateCategoryAsync(string key, Category category);
     Task DeleteCategoryAsync(string id);
-    Task<Dictionary<string, List<Expense>>> GetReportInformation();
+    Task<Dictionary<string, List<Expense>>> GetReportInformation(string userId);
 }

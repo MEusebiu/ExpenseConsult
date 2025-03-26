@@ -11,8 +11,10 @@ namespace ExpenseTests;
 [TestFixture]
 public class CategoryServiceTests
 {
-    private ICategoryRepository _categoryRepository;
     private IRepository<string, Category> _repository;
+    private ICategoryRepository _categoryRepository;
+    private IExpenseService _expenseService;
+
     private ICategoryService _categoryService;
 
     [SetUp]
@@ -20,9 +22,9 @@ public class CategoryServiceTests
     {
         _repository = Substitute.For<IRepository<string, Category>>();
         _categoryRepository = Substitute.For<ICategoryRepository>();
-        _categoryService = Substitute.For<ICategoryService>();
+        _expenseService = Substitute.For<IExpenseService>();
 
-        _categoryService = new CategoryService(_repository, _categoryRepository, _categoryService);
+        _categoryService = new CategoryService(_repository, _categoryRepository, _expenseService);
     }
 
     [Test]

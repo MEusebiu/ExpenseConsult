@@ -24,6 +24,6 @@ public class CategoryRepository : ICategoryRepository
         var categories = await _repository.GetAllAsync();
         var filtered = categories.Where(x => categoryIds.Contains(x.Id));
 
-        return new(categories.ToDictionary(x => x.Id, y => y.Name));
+        return new(filtered.ToDictionary(x => x.Id, y => y.Name));
     }
 }

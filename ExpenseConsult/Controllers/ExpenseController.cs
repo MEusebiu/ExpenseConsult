@@ -2,6 +2,7 @@ using ExpenseDataAccessLayer.Models;
 using ExpenseServices.Services.Interfaces;
 using ExpenseWebApi.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ExpenseWebApi.Controllers;
 
@@ -19,7 +20,8 @@ public class ExpenseController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetExpenses()
     {
-        var expenses = await _expenseService.GetExpensesAsync();
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var expenses = await _expenseService.GetUserExpensesAsync(userId);
 
         return Ok(expenses);
     }
@@ -27,34 +29,39 @@ public class ExpenseController : ControllerBase
     [HttpGet("filter-by-category")]
     public async Task<IActionResult> GetProductsByCategory(string categoryId)
     {
-        var expenses = await _expenseService.GetExpensesByCategoryAsync(categoryId);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var expenses = await _expenseService.GetExpensesByCategoryAsync(userId, categoryId);
+        
         return Ok(expenses);
     }
 
     [HttpGet("filter-by-amount")]
     public async Task<IActionResult> GetExpensesInAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
     {
-        var filteredExpenses = await _expenseService.GetExpensesAmountInterval(minAmount, maxAmount);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var filteredExpenses = await _expenseService.GetExpensesAmountInterval(userId, minAmount, maxAmount);
+        
         return Ok(filteredExpenses);
     }
 
     [HttpGet("filter-by-date")]
     public async Task<IActionResult> GetExpensesInDateRange([FromQuery] string minDate, [FromQuery] string maxDate)
     {
-
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!DateTime.TryParse(minDate, out var minDateParsed) || !DateTime.TryParse(maxDate, out var maxDateParsed))
         {
             return BadRequest("Invalid date format");
         }
 
-        var filteredExpenses = await _expenseService.GetExpensesDatesInterval(minDateParsed, maxDateParsed);
+        var filteredExpenses = await _expenseService.GetExpensesDatesInterval(userId, minDateParsed, maxDateParsed);
         return Ok(filteredExpenses);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetExpense(string id)
     {
-        var expense = await _expenseService.GetExpenseByIdAsync(id);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var expense = await _expenseService.GetExpenseByIdAsync(userId, id);
         if (expense == null)
         {
             return NotFound();
@@ -71,8 +78,8 @@ public class ExpenseController : ControllerBase
             Id = Guid.NewGuid().ToString(),
             Amount = expenseDto.Amount,
             Description = expenseDto.Description,
-            CategoryId = expenseDto.CategoryId.ToString(),
-            UserId = expenseDto.UserId.ToString()
+            CategoryId = expenseDto.CategoryId,
+            UserId = expenseDto.UserId
         };
        
         await _expenseService.AddExpenseAsync(expense);
@@ -83,7 +90,8 @@ public class ExpenseController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateExpense(string id, [FromBody] ExpenseUpdateDto expenseDto)
     {
-        var expense = await _expenseService.GetExpenseByIdAsync(id);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var expense = await _expenseService.GetExpenseByIdAsync(userId, id);
 
         expense.Amount = expenseDto.Amount;
         expense.Description = expenseDto.Description;

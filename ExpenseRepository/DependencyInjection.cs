@@ -9,29 +9,28 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
-namespace ExpenseDataAccessLayer
+namespace ExpenseDataAccessLayer;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
-        {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), schema => schema.SchemaBehavior(MySqlSchemaBehavior.Ignore)));
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), schema => schema.SchemaBehavior(MySqlSchemaBehavior.Ignore)));
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+        services.AddIdentity<User, IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
 
-            services.AddHostedService<ExpenseCacheInitializer>();
-            services.AddHostedService<CategoryCacheInitializer>();
+        services.AddHostedService<ExpenseCacheInitializer>();
+        services.AddHostedService<CategoryCacheInitializer>();
 
-            services.AddTransient<IExpenseRepository, ExpenseRepository>();
-            services.AddTransient<ICategoryRepository, CategoryRepository>();
+        services.AddTransient<IExpenseRepository, ExpenseRepository>();
+        services.AddTransient<ICategoryRepository, CategoryRepository>();
 
-            services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
+        services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
 
-            return services;
-        }
+        return services;
     }
 }
