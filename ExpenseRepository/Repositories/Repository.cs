@@ -19,19 +19,34 @@ namespace ExpenseDataAccessLayer.Repositories
             _dbSet = context.Set<TValue>();
         }
 
-        public async Task<IEnumerable<TValue>> GetAllAsync()
+        public async Task<IEnumerable<TValue>> GetAllAsync(Func<IQueryable<TValue>, IQueryable<TValue>>? include = null)
         {
-            return await _dbSet.ToListAsync();
+            IQueryable<TValue> query = _dbSet;
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            return await query.ToListAsync();
         }
 
-        public async Task<TValue?> GetByIdAsync(TKey key)
+        public async Task<TValue?> GetByIdAsync(TKey key, Func<IQueryable<TValue>, IQueryable<TValue>>? include = null)
         {
             if (_cache.TryGetValue(key, out var cachedValue))
             {
                 return cachedValue;
             }
 
-            var entity = await _dbSet.FindAsync(key);
+            IQueryable<TValue> query = _dbSet;
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            var entity = await query.FirstOrDefaultAsync(e => GetEntityKey(e).Equals(key));
+
             if (entity != null)
             {
                 _cache.TryAdd(key, entity);
@@ -101,7 +116,7 @@ namespace ExpenseDataAccessLayer.Repositories
         }
 
         private async Task SaveChangesAsync()
-        {           
+        {
             await _context.SaveChangesAsync();
         }
     }

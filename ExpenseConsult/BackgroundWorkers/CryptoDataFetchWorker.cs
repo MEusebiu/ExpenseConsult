@@ -21,28 +21,36 @@ public class CryptoDataFetchWorker : BackgroundService
         {
             _logger.LogInformation("Fetching crypto exchange rates...");
 
-            var response = await _httpClient.GetAsync(
-                cryptoApiUrl,
-                stoppingToken
-            );
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var data = await response.Content.ReadAsStringAsync();
-                var cryptoPrices = JsonSerializer.Deserialize<CryptoResponse>(data, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var response = await _httpClient.GetAsync(
+                    cryptoApiUrl,
+                    stoppingToken
+                );
 
-                if (cryptoPrices != null)
+                if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogInformation($"Exchange Rates at {DateTime.UtcNow}");
-                    _logger.LogInformation($"Bitcoin: $ {cryptoPrices.Bitcoin.USD}, Ethereum: $ {cryptoPrices.Ethereum.USD}, Dogecoin: $ {cryptoPrices.Doge.USD}");
+                    var data = await response.Content.ReadAsStringAsync();
+                    var cryptoPrices = JsonSerializer.Deserialize<CryptoResponse>(data, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    if (cryptoPrices != null)
+                    {
+                        _logger.LogInformation($"Exchange Rates at {DateTime.UtcNow}");
+                        _logger.LogInformation(
+                            $"Bitcoin: $ {cryptoPrices.Bitcoin.USD}, Ethereum: $ {cryptoPrices.Ethereum.USD}, Dogecoin: $ {cryptoPrices.Doge.USD}");
+                    }
+                }
+                else
+                {
+                    _logger.LogError("Failed to fetch currency exchange rates.");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                _logger.LogError("Failed to fetch currency exchange rates.");
+                _logger.LogError(ex, "An error occurred while fetching crypto exchange rates.");
             }
 
             await Task.Delay(TimeSpan.FromMinutes(3), stoppingToken);

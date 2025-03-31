@@ -1,6 +1,7 @@
 ﻿using ExpenseDataAccessLayer.Interfaces;
 using ExpenseDataAccessLayer.Models;
 using ExpenseServices.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseServices.Services;
 
@@ -17,14 +18,44 @@ public class ExpenseService : IExpenseService
 
     public async Task<IEnumerable<Expense>> GetUserExpensesAsync(string userId)
     {
-       var expenses = await _repository.GetAllAsync();
-       return expenses.Where(e => e.UserId == userId);
+        var expenses =
+            await _repository.GetAllAsync(query =>
+                query.Include(a => a.User)
+                     .Include(e => e.Category));
+        var result = expenses.Select((e => new Expense
+        {
+            Id = e.Id,
+            Description = e.Description,
+            Amount = e.Amount,
+            CreatedDate = e.CreatedDate,
+            UserId = e.UserId,
+            UserName = e.User.UserName,
+            CategoryId = e.Category.Id,
+            CategoryName = e.Category.Name
+        }));
+
+        return result.Where(e => e.UserId == userId);
     }
 
     public async Task<Expense> GetExpenseByIdAsync(string userId, string id)
     {
-        var expense = await _repository.GetByIdAsync(id);
-        return expense.UserId == userId ? expense : null;
+        var expense = await _repository.GetByIdAsync(id, query => 
+            query.Include(a => a.User)
+                 .Include(e => e.Category));
+
+        var result = new Expense
+        {
+            Id = expense.Id,
+            Description = expense.Description,
+            Amount = expense.Amount,
+            CreatedDate = expense.CreatedDate,
+            UserId = expense.UserId,
+            UserName = expense.User.UserName,
+            CategoryId = expense.Category.Id,
+            CategoryName = expense.Category.Name
+        };
+
+        return result.UserId == userId ? expense : null;
     }
 
     public async Task AddExpenseAsync(Expense expense)

@@ -30,44 +30,6 @@ public class ExpenseController : ControllerBase
         return Ok(expenses);
     }
 
-    [HttpGet("filter-by-category")]
-    public async Task<IActionResult> GetProductsByCategory(string categoryId)
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var expenses = await _expenseService.GetExpensesByCategoryAsync(userId, categoryId);
-
-        _logger.LogInformation("Successfully fetched {Count} expenses for selected category", expenses.ToList().Count);
-
-        return Ok(expenses);
-    }
-
-    [HttpGet("filter-by-amount")]
-    public async Task<IActionResult> GetExpensesInAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var expenses = await _expenseService.GetExpensesAmountInterval(userId, minAmount, maxAmount);
-
-        _logger.LogInformation("Successfully fetched {Count} expenses for selected amount range", expenses.ToList().Count);
-
-        return Ok(expenses);
-    }
-
-    [HttpGet("filter-by-date")]
-    public async Task<IActionResult> GetExpensesInDateRange([FromQuery] string minDate, [FromQuery] string maxDate)
-    {
-        if (!DateTime.TryParse(minDate, out var minDateParsed) || !DateTime.TryParse(maxDate, out var maxDateParsed))
-        {
-            return BadRequest("Invalid date format");
-        }
-
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var expenses = await _expenseService.GetExpensesDatesInterval(userId, minDateParsed, maxDateParsed);
-
-        _logger.LogInformation("Successfully fetched {Count} expenses for selected date range", expenses.ToList().Count);
-
-        return Ok(expenses);
-    }
-
     [HttpGet("{id}")]
     public async Task<IActionResult> GetExpense(string id)
     {
@@ -81,6 +43,17 @@ public class ExpenseController : ControllerBase
         _logger.LogInformation("Successfully fetched {expenseName}", expense.Description);
 
         return Ok(expense);
+    }
+
+    [HttpGet("filter-by-category")]
+    public async Task<IActionResult> GetExpensesByCategory(string categoryId)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var expenses = await _expenseService.GetExpensesByCategoryAsync(userId, categoryId);
+
+        _logger.LogInformation("Successfully fetched {Count} expenses for selected category", expenses.ToList().Count);
+
+        return Ok(expenses);
     }
 
     [HttpPost]
@@ -126,5 +99,32 @@ public class ExpenseController : ControllerBase
         _logger.LogInformation("Successfully deleted expense");
 
         return Ok(); 
+    }
+
+    [HttpGet("filter-by-amount")]
+    public async Task<IActionResult> GetExpensesInAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var expenses = await _expenseService.GetExpensesAmountInterval(userId, minAmount, maxAmount);
+
+        _logger.LogInformation("Successfully fetched {Count} expenses for selected amount range", expenses.ToList().Count);
+
+        return Ok(expenses);
+    }
+
+    [HttpGet("filter-by-date")]
+    public async Task<IActionResult> GetExpensesInDateRange([FromQuery] string minDate, [FromQuery] string maxDate)
+    {
+        if (!DateTime.TryParse(minDate, out var minDateParsed) || !DateTime.TryParse(maxDate, out var maxDateParsed))
+        {
+            return BadRequest("Invalid date format");
+        }
+
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var expenses = await _expenseService.GetExpensesDatesInterval(userId, minDateParsed, maxDateParsed);
+
+        _logger.LogInformation("Successfully fetched {Count} expenses for selected date range", expenses.ToList().Count);
+
+        return Ok(expenses);
     }
 }

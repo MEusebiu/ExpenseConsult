@@ -13,16 +13,19 @@ public class Expense
 
     [Column(TypeName = "decimal(18,2)")]
     public decimal Amount { get; set; }
-
-    public string CategoryId { get; set; }
-
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
+    [JsonIgnore]
+    public string CategoryId { get; set; }
+    public string CategoryName { get; set; }
 
     [JsonIgnore]
     [ForeignKey("CategoryId")]
     public virtual Category Category { get; set; }
 
+    [JsonIgnore]
     public string UserId { get; set; }
+    public string UserName { get; set; }
 
     [JsonIgnore]
     [ForeignKey("UserId")]
